@@ -1,6 +1,8 @@
 from enum import Enum
 import json
 import curses
+import wikipedia
+import string
 
 class Keyboard:
     def __init__(self,stdscr):
@@ -42,58 +44,56 @@ class Buffer:
 #formatter class for putting text in window
 class Formatter:
 
-    def __init__(self, stdscr, text):
-        self.text = text.rstrip()
-        self.words = text.split(' ')
+    def __init__(self, stdscr, text, line_height=1, 
+            vertical_offset=0, vertical_buffer=0):
+        self.text = text
+        self.words = text.split()
         self.lines = []
         self.pages = []
+        self.line_height = line_height
+        self.vertical_offset = vertical_offset
+        self.vertical_buffer = vertical_buffer
         self.stdscr = stdscr
         
-    def get_line(self):
+    def make_line(self):
         line = []
         line_length = 0
         for word in self.words:
             line_length += len(word) + 1
-            if line_length < self.stdscr.getmaxyx()[1] / 2:
+            if line_length < (self.stdscr.getmaxyx()[1] / 2):
                 line.append(word)
+            else:
+                break
         self.lines.append(line)
         self.words = self.words[len(line):]
 
-    def get_all_lines(self):
-        while len(self.words) > 0:
-            self.get_line()
 
-    def get_page(self):
-        index = int(self.stdscr.getmaxyx()[0])
+    def make_all_lines(self):
+        while len(self.words) > 0:
+            self.make_line()
+
+    def make_page(self):
+        index = int(self.stdscr.getmaxyx()[0] / self.line_height)
         self.pages.append(self.lines[0:index])
         self.lines = self.lines[index:]
 
-    def get_all_pages(self):
+    def make_all_pages(self):
         while len(self.lines) > 0:
-            self.get_page()
-
+            self.make_page()
+    
+    #convert text into pages of lines that fit the terminal window
+    #and then display the first page. The first page will be destroyed 
+    #when conifrmed as a matching entry
     def print_text(self):
-        self.get_all_lines()
-        self.get_all_pages()
+        self.make_all_lines()
+        self.make_all_pages()
         page = self.pages[0]
         for i, line in enumerate(page):
             text = ' '.join(line)
             text = list(text)
             text = ' '.join(text)
-            self.stdscr.addstr(i,0,text)
-
-    def debug(self):
-        debug_string = ''
-        for page in self.pages:
-            debug_string += 'PAGE: '
-            for line in page:
-                debug_string += 'LINE: '
-                for word in line:
-                    dubug_string += word
-        self.stdscr.addstr(0, 0, debug_string)
-
-            
-
+            self.stdscr.addstr(self.vertical_offset + 
+                    (self.line_height * i),0,text)
 
 class Menu:
     def __init__(self, stdscr, *args):
@@ -122,7 +122,7 @@ class Menu:
                 self.stdscr.addstr(i + 8, 0, str(i + 1) + '. ' + v)
 
     def navigate(self,key):
-        self.stdscr.addstr(str(self.active_item))
+        
         if key == curses.KEY_UP and self.active_item > 1:
             self.active_item -= 1
         elif key == curses.KEY_DOWN and self.active_item < self.menu_length:
@@ -130,3 +130,29 @@ class Menu:
         elif key == curses.KEY_ENTER or key == 10:
             return self.active_item
         return 1
+
+class Wiki:
+    
+    def __init__(self):
+        self.page = None
+        while self.page is None:
+            try:
+                title = wikipedia.random()
+                self.page = wikipedia.page(title=title)
+            except:
+                pass
+
+
+    def get_page(self):
+        printable = set(string.printable)
+        content = self.page.content
+        
+        #remove characters that cannot be displayed
+        content = ''.join(filter(lambda x: x in printable, content))
+        
+        #remove references and other errata
+        content = content.split('==')
+        content = content[0]
+
+        return content
+
