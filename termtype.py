@@ -28,9 +28,7 @@ def main(stdscr):
         elif mode == 3:
             wiki = Wiki()
             while(True):
-                text = 'One two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen'             
                 stdscr.clear()
-                
                 formatter = Formatter(stdscr, wiki.get_page(),
                         line_height=3, vertical_offset=2)
                 formatter.print_text()
