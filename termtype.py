@@ -14,24 +14,18 @@ def main(stdscr):
     mode = 1
     key = 0
     curses.curs_set(0)
-    while mode != 5:
-        
+    while mode != 5: 
         if mode == 1:
             stdscr.clear()
             menu.print_splash()
             menu.print_menu()
+            mode = menu.navigate(stdscr.getch())
             stdscr.refresh()
-            menu.navigate(stdscr.getkey())
-
-    stringBuffer = Buffer()
-'''
-    key = 0
-    while key != 'q':
-        key = stdscr.getkey()
-        stringBuffer.insert(key)
-        stdscr.addstr(0, 0, stringBuffer.get_text())
-        stdscr.refresh()
-'''     
+        elif mode == 2:
+            mode = 5
+        elif mode == 3:
+            mode = 5
+        elif mode = 4:
+            mode = 5
 
 curses.wrapper(main)
-
