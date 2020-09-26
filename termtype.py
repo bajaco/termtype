@@ -5,6 +5,7 @@ import urllib.request
 from classes import Keyboard
 from classes import Menu
 from classes import Buffer
+from classes import Formatter
 
 
 
@@ -22,10 +23,19 @@ def main(stdscr):
             mode = menu.navigate(stdscr.getch())
             stdscr.refresh()
         elif mode == 2:
-            mode = 5
+            while(True):
+                text = 'One two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen'             
+                stdscr.clear()
+                
+                formatter = Formatter(stdscr, text)
+                formatter.print_text()
+                stdscr.refresh()
+                key = stdscr.getch()
+
+            
         elif mode == 3:
             mode = 5
-        elif mode = 4:
+        elif mode == 4:
             mode = 5
 
 curses.wrapper(main)
