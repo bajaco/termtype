@@ -16,6 +16,8 @@ def main(stdscr):
     key = 0
     curses.curs_set(0)
     curses.noecho()
+    
+    #selct mode based on menu options
     while mode != 5: 
         if mode == 1:
             stdscr.clear()
@@ -27,13 +29,44 @@ def main(stdscr):
             mode = 5 
         elif mode == 3:
             wiki = Wiki()
+            typing_buffer = Buffer()
+            page_text = wiki.get_page()
+            guide_text = keyboard.transform_text(page_text)
+            
+            #Formatter for article
+            wiki_formatter = Formatter(stdscr, page_text,
+                    line_height=5, vertical_offset=1, vertical_buffer=0)
+            
+            
+            #Formatter for finger indication
+            guide_formatter = Formatter(stdscr, guide_text,
+                    line_height=5, vertical_offset=0, vertical_buffer=0)
+           
+            
+            #Formatter for typed text
+            typing_formatter = Formatter(stdscr, typing_buffer.get_text(),
+                    line_height=5, vertical_offset=2, vertical_buffer=0)
+            
+
+
             while(True):
+                #clear string and print from formatters
                 stdscr.clear()
-                formatter = Formatter(stdscr, wiki.get_page(),
-                        line_height=3, vertical_offset=2)
-                formatter.print_text()
+                wiki_formatter.print_text() 
+                guide_formatter.print_text()
+                typing_formatter.print_text()
+                
+                #if key is enter, remove page from wiki and guide formatters
                 stdscr.refresh()
-                key = stdscr.getch()
+                c = stdscr.getch()
+                if c == 10:
+                    if not wiki_formatter.last_page():
+                        wiki_formatter.remove_page()
+                        guide_formatter.remove_page()
+                        typing_formatter.set_master('')
+                else:
+                    typing_buffer.input(c)
+                    typing_formatter.set_master(typing_buffer.get_text())
 
         elif mode == 4:
             mode = 5

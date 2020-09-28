@@ -16,6 +16,15 @@ class Keyboard:
     def get_finger(self, key):
         return self.KEYS[key]
 
+    def transform_text(self, text):
+        newtext = []
+        for c in text:
+            if c.lower() in self.KEYS:
+                newtext.append(self.KEYS[c.lower()])
+            else:
+                newtext.append(c)
+        return ''.join(newtext)
+
 
 #string buffer class for editing strings
 class Buffer:
@@ -33,20 +42,24 @@ class Buffer:
             self.position += 1
 
     def insert(self, insert_string):
-        self.text = (self.text[0:self.position] + insert_text +  
-                self.text[self.position:self.length])
+        self.text = (self.text[0:self.position] + insert_string + self.text[self.position:self.length])
         self.length += len(insert_string)
         self.position += len(insert_string)
 
     def get_text(self):
         return self.text
 
+    def input(self, c):
+        
+        self.insert(chr(c))
+
 #formatter class for putting text in window
 class Formatter:
 
     def __init__(self, stdscr, text, line_height=1, 
             vertical_offset=0, vertical_buffer=0):
-        self.text = text
+        self.master_text = text
+        self.text = self.master_text
         self.words = text.split()
         self.lines = []
         self.pages = []
@@ -54,7 +67,16 @@ class Formatter:
         self.vertical_offset = vertical_offset
         self.vertical_buffer = vertical_buffer
         self.stdscr = stdscr
-        
+    
+    def set_master(self,text):
+        self.master_text = text
+
+    def reset(self):
+        self.text = self.master_text
+        self.words = self.text.split()
+        self.lines = []
+        self.pages = []
+
     def make_line(self):
         line = []
         line_length = 0
@@ -67,13 +89,29 @@ class Formatter:
         self.lines.append(line)
         self.words = self.words[len(line):]
 
+    def last_page(self):
+        if len(self.pages) == 1:
+            return True
+        else:
+            return False
+
+    def remove_page(self):
+        new_text = []
+        if len(self.pages) > 1:
+            for page in self.pages[1:]:
+                for line in page:
+                    for word in line:
+                        new_text.append(word)
+        self.master_text = ' '.join(new_text)
+
 
     def make_all_lines(self):
         while len(self.words) > 0:
             self.make_line()
 
     def make_page(self):
-        index = int(self.stdscr.getmaxyx()[0] / self.line_height)
+        index = int(self.stdscr.getmaxyx()[0] / self.line_height 
+                - self.vertical_buffer)
         self.pages.append(self.lines[0:index])
         self.lines = self.lines[index:]
 
@@ -85,15 +123,19 @@ class Formatter:
     #and then display the first page. The first page will be destroyed 
     #when conifrmed as a matching entry
     def print_text(self):
+        self.reset()
+        self.words = self.text.split()
         self.make_all_lines()
         self.make_all_pages()
-        page = self.pages[0]
-        for i, line in enumerate(page):
-            text = ' '.join(line)
-            text = list(text)
-            text = ' '.join(text)
-            self.stdscr.addstr(self.vertical_offset + 
-                    (self.line_height * i),0,text)
+        if len(self.pages) > 0:
+            page = self.pages[0]
+            for i, line in enumerate(page):
+                text = ' '.join(line)
+                text = list(text)
+                text = ' '.join(text)
+                self.stdscr.addstr(self.vertical_offset + 
+                        (self.line_height * i),0,text)
+
 
 class Menu:
     def __init__(self, stdscr, *args):
@@ -151,8 +193,8 @@ class Wiki:
         content = ''.join(filter(lambda x: x in printable, content))
         
         #remove references and other errata
-        content = content.split('==')
-        content = content[0]
+        #content = content.split('==')
+        #content = content[0]
 
         return content
 
