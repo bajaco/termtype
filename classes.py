@@ -15,6 +15,9 @@ class Keyboard:
 
     def get_finger(self, key):
         return self.KEYS[key]
+    
+    def has(self, c):
+        return c.lower() in self.KEYS
 
     def transform_text(self, text):
         newtext = []
@@ -53,6 +56,11 @@ class Buffer:
     def __right(self):
         if self.position < self.length:
             self.position += 1
+    
+    def __delete(self):
+        if self.length > self.position:
+            self.text = self.text[:self.position] + self.text[self.position + 1:]
+            self.length -= 1
 
     def insert(self, insert_string):
         self.text = (self.text[0:self.position] + insert_string + self.text[self.position:self.length])
@@ -62,9 +70,21 @@ class Buffer:
     def get_text(self):
         return self.text
 
-    def input(self, c):
-        
-        self.insert(chr(c))
+    def input(self, c, keyboard):
+        if keyboard.has(chr(c)):
+            self.insert(chr(c))
+        else:
+            if c == curses.KEY_BACKSPACE:
+                self.__left()
+                self.__delete()
+
+    def clear(self):
+        self.text = ''
+        self.length = 0
+        self.position = 0
+
+    def get_count(self):
+        return len(self.text.split())
 
 #formatter class for putting text in window
 class Formatter:
@@ -108,14 +128,11 @@ class Formatter:
         else:
             return False
 
-    def remove_page(self):
+    def remove_words(self, index):
         new_text = []
-        if len(self.pages) > 1:
-            for page in self.pages[1:]:
-                for line in page:
-                    for word in line:
-                        new_text.append(word)
-        self.master_text = ' '.join(new_text)
+        words = self.text.split()
+        words = words[index:]
+        self.master_text = ' '.join(words)
 
 
     def make_all_lines(self):

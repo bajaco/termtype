@@ -36,19 +36,19 @@ def main(stdscr):
             
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
-                    line_height=5, vertical_offset=1, vertical_buffer=0)
+                    line_height=6, vertical_offset=1, vertical_buffer=0)
             
             #Formatter for finger indication
             guide_formatter = Formatter(stdscr, guide_text,
-                    line_height=5, vertical_offset=0, vertical_buffer=0)
+                    line_height=6, vertical_offset=0, vertical_buffer=0)
            
             #Formatter for typed text
             typing_formatter = Formatter(stdscr, typing_buffer.get_text(),
-                    line_height=5, vertical_offset=2, vertical_buffer=0)
+                    line_height=6, vertical_offset=2, vertical_buffer=0)
 
             #Formatter for error text
             error_formatter = Formatter(stdscr, error_text,
-                    line_height=5, vertical_offset=3, vertical_buffer=0)
+                    line_height=6, vertical_offset=3, vertical_buffer=0)
 
             
 
@@ -64,13 +64,15 @@ def main(stdscr):
                 #if key is enter, remove page from wiki and guide formatters
                 stdscr.refresh()
                 c = stdscr.getch()
-                if c == 10:
-                    if not wiki_formatter.last_page():
-                        wiki_formatter.remove_page()
-                        guide_formatter.remove_page()
-                        typing_formatter.set_master('')
+                if c == 10: 
+                    count = typing_buffer.get_count()
+                    wiki_formatter.remove_words(count)
+                    guide_formatter.remove_words(count)
+                    typing_buffer.clear()
+                    error_formatter.set_master('')
+                    typing_formatter.set_master('')
                 else:
-                    typing_buffer.input(c)
+                    typing_buffer.input(c, keyboard)
                     typing_formatter.set_master(typing_buffer.get_text())
                     error_formatter.set_master(keyboard.error_text(
                         wiki_formatter.dump_text(), typing_buffer.get_text()))
