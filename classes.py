@@ -110,6 +110,13 @@ class Formatter:
         self.lines = []
         self.pages = []
 
+    def remove_words(self, index):
+        new_text = []
+        words = self.text.split()
+        words = words[index:]
+        self.master_text = ' '.join(words)
+
+
     def make_line(self):
         line = []
         line_length = 0
@@ -121,20 +128,7 @@ class Formatter:
                 break
         self.lines.append(line)
         self.words = self.words[len(line):]
-
-    def last_page(self):
-        if len(self.pages) == 1:
-            return True
-        else:
-            return False
-
-    def remove_words(self, index):
-        new_text = []
-        words = self.text.split()
-        words = words[index:]
-        self.master_text = ' '.join(words)
-
-
+    
     def make_all_lines(self):
         while len(self.words) > 0:
             self.make_line()
