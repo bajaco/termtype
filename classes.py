@@ -25,6 +25,19 @@ class Keyboard:
                 newtext.append(c)
         return ''.join(newtext)
 
+    def error_text(self, master, typed):
+        new_text = []
+        for i,c in enumerate(typed):
+            if c == master[i]:
+                if c == ' ':
+                    new_text.append(' ')
+                else:
+                    new_text.append('_')
+            else:
+                new_text.append('X')
+        return ''.join(new_text)
+
+
 
 #string buffer class for editing strings
 class Buffer:
@@ -118,6 +131,14 @@ class Formatter:
     def make_all_pages(self):
         while len(self.lines) > 0:
             self.make_page()
+
+    def dump_text(self):
+        text = []
+        for page in self.pages:
+            for line in page:
+                for word in line:
+                    text.append(word)
+        return ' '.join(text)
     
     #convert text into pages of lines that fit the terminal window
     #and then display the first page. The first page will be destroyed 
