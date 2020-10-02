@@ -16,6 +16,7 @@ def main(stdscr):
     key = 0
     curses.curs_set(0)
     curses.noecho()
+    curses.use_default_colors()
     
     #selct mode based on menu options
     while mode != 5: 
@@ -50,9 +51,7 @@ def main(stdscr):
             error_formatter = Formatter(stdscr, error_text,
                     line_height=6, vertical_offset=3, vertical_buffer=0)
 
-            
-
-
+            #gameplay loop
             while(True):
                 #clear string and print from formatters
                 stdscr.clear()
@@ -60,6 +59,10 @@ def main(stdscr):
                 guide_formatter.print_text()
                 typing_formatter.print_text()
                 error_formatter.print_text()
+                
+                #break if there are no more words to be typed and show statistics
+                if wiki_formatter.out_of_words():
+                    break
                 
                 #if key is enter, remove page from wiki and guide formatters
                 stdscr.refresh()
@@ -76,6 +79,16 @@ def main(stdscr):
                     typing_formatter.set_master(typing_buffer.get_text())
                     error_formatter.set_master(keyboard.error_text(
                         wiki_formatter.dump_text(), typing_buffer.get_text()))
+
+            #statistics loop
+            while(True):
+                stdscr.clear()
+                stdscr.addstr(0,0,'Stats: ')
+                stdscr.refresh()
+                c = stdscr.getkey()
+                if c == 'q':
+                    mode = 5
+                    break
 
         elif mode == 4:
             mode = 5

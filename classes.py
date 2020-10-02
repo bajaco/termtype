@@ -29,7 +29,7 @@ class Keyboard:
         return ''.join(newtext)
 
     def error_text(self, master, typed):
-        new_text = []
+        new_text = [] 
         for i,c in enumerate(typed):
             if c == master[i]:
                 if c == ' ':
@@ -38,6 +38,7 @@ class Keyboard:
                     new_text.append('_')
             else:
                 new_text.append('X')
+            
         return ''.join(new_text)
 
 
@@ -115,6 +116,11 @@ class Formatter:
         words = self.text.split()
         words = words[index:]
         self.master_text = ' '.join(words)
+    
+    def out_of_words(self):
+        if len(self.pages) > 0:
+            return False
+        return True
 
 
     def make_line(self):
