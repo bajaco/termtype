@@ -5,8 +5,8 @@ A Curses-based Python application to practice touch-typing by typing out random 
 ### Installation
 
 1. Optionally create and enter virtual environment:
-	`python -m venv venv`
-	`source venv/bin/activate`
+- `python -m venv venv`
+- `source venv/bin/activate`
 2. Install required packages: `pip install -r requirements.txt`
 3. Run application: `python termtype.py`
 
