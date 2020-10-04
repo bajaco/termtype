@@ -34,6 +34,7 @@ def main(stdscr):
             page_text = wiki.get_page()
             guide_text = keyboard.transform_text(page_text)
             error_text = ''
+            errors = 0
             
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
@@ -69,8 +70,9 @@ def main(stdscr):
                 c = stdscr.getch()
                 if c == 10: 
                     count = typing_buffer.get_count()
-                    wiki_formatter.remove_words(count)
+                    removed = wiki_formatter.remove_words(count)
                     guide_formatter.remove_words(count)
+                    errors += typing_buffer.new_errors(removed)
                     typing_buffer.clear()
                     error_formatter.set_master('')
                     typing_formatter.set_master('')
@@ -83,7 +85,7 @@ def main(stdscr):
             #statistics loop
             while(True):
                 stdscr.clear()
-                stdscr.addstr(0,0,'Stats: ')
+                stdscr.addstr(0,0,'Stats: \n Errors: ' + str(errors))
                 stdscr.refresh()
                 c = stdscr.getkey()
                 if c == 'q':

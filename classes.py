@@ -84,6 +84,14 @@ class Buffer:
         self.length = 0
         self.position = 0
 
+    def new_errors(self,comparison_text):
+        errors = 0
+        for i,c in enumerate(self.text):
+            if c != comparison_text[i]:
+                errors += 1
+        return errors
+
+
     def get_count(self):
         return len(self.text.split())
 
@@ -114,8 +122,10 @@ class Formatter:
     def remove_words(self, index):
         new_text = []
         words = self.text.split()
+        removed_words = words[:index]
         words = words[index:]
         self.master_text = ' '.join(words)
+        return ' '.join(removed_words)
     
     def out_of_words(self):
         if len(self.pages) > 0:
