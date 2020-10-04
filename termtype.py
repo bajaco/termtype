@@ -76,6 +76,12 @@ def main(stdscr):
                     typing_buffer.clear()
                     error_formatter.set_master('')
                     typing_formatter.set_master('')
+                elif c == 27:
+                    count = typing_buffer.get_count()
+                    removed = wiki_formatter.remove_words(count)
+                    guide_formatter.remove_words(count)
+                    errors += typing_buffer.new_errors(removed)
+                    break
                 else:
                     typing_buffer.input(c, keyboard)
                     typing_formatter.set_master(typing_buffer.get_text())
@@ -90,6 +96,9 @@ def main(stdscr):
                 c = stdscr.getkey()
                 if c == 'q':
                     mode = 5
+                    break
+                else:
+                    mode = 1
                     break
 
         elif mode == 4:
