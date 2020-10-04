@@ -3,6 +3,29 @@ import json
 import curses
 import wikipedia
 import string
+import time
+
+class Timer:
+    def __init__(self):
+        self.beginning = None
+        self.end = None
+        self.timing = False
+        self.duration = None
+
+    def start(self):
+        self.beginning = time.time()
+        self.timing = True
+
+    def stop(self):
+        self.end = time.time()
+        self.timing = False
+        self.duration = self.end - self.beginning
+
+    def is_timing(self):
+        return self.timing
+
+    def get_duration(self):
+        return self.duration
 
 class Keyboard:
     def __init__(self,stdscr):
@@ -87,8 +110,9 @@ class Buffer:
     def new_errors(self,comparison_text):
         errors = 0
         for i,c in enumerate(self.text):
-            if c != comparison_text[i]:
-                errors += 1
+            if i < len(comparison_text):
+                if c != comparison_text[i]:
+                    errors += 1
         return errors
 
 

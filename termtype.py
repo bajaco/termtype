@@ -7,6 +7,7 @@ from classes import Menu
 from classes import Buffer
 from classes import Formatter
 from classes import Wiki
+from classes import Timer
 
 
 def main(stdscr):
@@ -35,6 +36,7 @@ def main(stdscr):
             guide_text = keyboard.transform_text(page_text)
             error_text = ''
             errors = 0
+            timer = Timer()
             
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
@@ -63,11 +65,14 @@ def main(stdscr):
                 
                 #break if there are no more words to be typed and show statistics
                 if wiki_formatter.out_of_words():
+                    timer.stop()
                     break
                 
                 #if key is enter, remove page from wiki and guide formatters
                 stdscr.refresh()
                 c = stdscr.getch()
+
+
                 if c == 10: 
                     count = typing_buffer.get_count()
                     removed = wiki_formatter.remove_words(count)
@@ -77,12 +82,17 @@ def main(stdscr):
                     error_formatter.set_master('')
                     typing_formatter.set_master('')
                 elif c == 27:
+                    timer.stop()
                     count = typing_buffer.get_count()
                     removed = wiki_formatter.remove_words(count)
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
                     break
                 else:
+                    #start timing if necessary
+                    if not timer.is_timing():
+                        timer.start()
+
                     typing_buffer.input(c, keyboard)
                     typing_formatter.set_master(typing_buffer.get_text())
                     error_formatter.set_master(keyboard.error_text(
@@ -91,7 +101,11 @@ def main(stdscr):
             #statistics loop
             while(True):
                 stdscr.clear()
-                stdscr.addstr(0,0,'Stats: \n Errors: ' + str(errors))
+                results_string = ''
+                results_string += 'Stats: \n'
+                results_string += 'Error: ' + str(errors) + '\n'
+                results_string += 'Time: ' + str(timer.get_duration())
+                stdscr.addstr(0,0,results_string)
                 stdscr.refresh()
                 c = stdscr.getkey()
                 if c == 'q':
