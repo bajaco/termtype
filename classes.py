@@ -27,6 +27,26 @@ class Timer:
     def get_duration(self):
         return self.duration
 
+    def get_pretty_duration(self):
+        dur = self.duration
+        durstring = ''
+        if dur > 3600:
+            hours = int(dur/3600)
+            durstring += str(hours)
+            dursting += ' hours '
+            dur -= 3600 * hours
+            
+        if dur > 60:
+            minutes = int(dur/60)
+            durstring += str(minutes)
+            durstring += ' minutes '
+            dur -= 60 * minutes
+            
+        durstring += str(int(dur))
+        durstring += ' seconds'
+        return durstring
+            
+
 class Keyboard:
     def __init__(self,stdscr):
         self.KEYS = None

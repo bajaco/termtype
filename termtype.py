@@ -103,8 +103,8 @@ def main(stdscr):
                 stdscr.clear()
                 results_string = ''
                 results_string += 'Stats: \n'
-                results_string += 'Error: ' + str(errors) + '\n'
-                results_string += 'Time: ' + str(timer.get_duration())
+                results_string += 'Errors: ' + str(errors) + '\n'
+                results_string += 'Time: ' + str(timer.get_pretty_duration())
                 stdscr.addstr(0,0,results_string)
                 stdscr.refresh()
                 c = stdscr.getkey()
