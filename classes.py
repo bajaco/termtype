@@ -263,7 +263,7 @@ class Menu:
             self.active_item += 1
         elif key == curses.KEY_ENTER or key == 10:
             return self.active_item
-        return 1
+        return 0
 
 class Wiki:
     

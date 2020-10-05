@@ -11,25 +11,25 @@ from classes import Timer
 
 
 def main(stdscr):
-    menu = Menu(stdscr,'Intro', 'Help', 'Play', 'Stats', 'Exit')
+    menu = Menu(stdscr, 'Help', 'Play', 'Stats', 'Exit')
     keyboard = Keyboard(stdscr)
-    mode = 1
+    mode = 0
     key = 0
     curses.curs_set(0)
     curses.noecho()
     curses.use_default_colors()
     
     #selct mode based on menu options
-    while mode != 5: 
-        if mode == 1:
+    while mode != 4: 
+        if mode == 0:
             stdscr.clear()
             menu.print_splash()
             menu.print_menu()
             mode = menu.navigate(stdscr.getch())
             stdscr.refresh()
+        elif mode == 1:
+            mode = 4 
         elif mode == 2:
-            mode = 5 
-        elif mode == 3:
             #initialization for play mode
             wiki = Wiki()
             typing_buffer = Buffer()
@@ -119,13 +119,13 @@ def main(stdscr):
                 stdscr.refresh()
                 c = stdscr.getkey()
                 if c == 'q':
-                    mode = 5
+                    mode = 4
                     break
                 else:
-                    mode = 1
+                    mode = 0
                     break
 
-        elif mode == 4:
-            mode = 5
+        elif mode == 3:
+            mode = 4
 
 curses.wrapper(main)
