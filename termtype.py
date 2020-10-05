@@ -30,12 +30,14 @@ def main(stdscr):
         elif mode == 2:
             mode = 5 
         elif mode == 3:
+            #initialization for play mode
             wiki = Wiki()
             typing_buffer = Buffer()
             page_text = wiki.get_page()
             guide_text = keyboard.transform_text(page_text)
             error_text = ''
             errors = 0
+            entered_words = 0
             timer = Timer()
             
             #Formatter for article
@@ -75,6 +77,7 @@ def main(stdscr):
 
                 if c == 10: 
                     count = typing_buffer.get_count()
+                    entered_words += count
                     removed = wiki_formatter.remove_words(count)
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
@@ -84,6 +87,7 @@ def main(stdscr):
                 elif c == 27:
                     timer.stop()
                     count = typing_buffer.get_count()
+                    entered_words += count
                     removed = wiki_formatter.remove_words(count)
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
@@ -105,6 +109,12 @@ def main(stdscr):
                 results_string += 'Stats: \n'
                 results_string += 'Errors: ' + str(errors) + '\n'
                 results_string += 'Time: ' + str(timer.get_pretty_duration())
+                results_string += '\n'
+                results_string += 'Words: '
+                results_string += str(entered_words)
+                results_string += '\n'
+                results_string += 'WPM: '
+                results_string += str(int(round(entered_words / timer.get_duration() * 60)))
                 stdscr.addstr(0,0,results_string)
                 stdscr.refresh()
                 c = stdscr.getkey()
