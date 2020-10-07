@@ -4,6 +4,21 @@ import curses
 import wikipedia
 import string
 import time
+import sqlite3
+
+class Database:
+    def __init__(self, database_path):
+        self.conn = sqlite.connect(database_path)
+        c = self.conn.cursor()
+        try:
+            c.execute('''CREATE TABLE sessions
+                    (duration real, words int, errors int, time int)''')
+            conn.commit()
+        
+        #If table exists do nothing
+        except sqlite3.Error:
+            pass
+
 
 class Timer:
     def __init__(self):
