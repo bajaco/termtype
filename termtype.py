@@ -12,6 +12,8 @@ from classes import Database
 
 
 def main(stdscr):
+
+    #initialization
     menu = Menu(stdscr, 'Help', 'Play', 'Stats', 'Exit')
     keyboard = Keyboard(stdscr)
     database = Database(stdscr)
@@ -23,14 +25,41 @@ def main(stdscr):
     
     #selct mode based on menu options
     while mode != 4: 
+        
+        #menu mode
         if mode == 0:
             stdscr.clear()
             menu.print_splash()
             menu.print_menu()
             mode = menu.navigate(stdscr.getch())
             stdscr.refresh()
+        
+        #help mode
         elif mode == 1:
-            mode = 4 
+            help_string = '''
+            Welcome to termtype! Termtype is a touch-typing aid 
+            that allows you to practice your skills by typing 
+            random Wikipedia articles. Simply type the displayed
+            text, and refer to the line above to check which finger
+            to use. From left pinky to right pinky, the fingers
+            are numbered 1-8, with thumbs omitted.
+
+            Press enter to remove typed words from the display,
+            and press escape at any time to stop typing. Your
+            typed words will still count towards your progress
+            even if you don't finish the article, so feel free
+            to stop at anytime!
+
+            Press any key to continue:
+            '''
+            help_formatter = Formatter(stdscr, help_string)
+            stdscr.clear()
+            help_formatter.print_text()
+            c = stdscr.getch()
+
+            mode = 0
+        
+        #play mode
         elif mode == 2:
             
             #initialization for play mode
@@ -130,7 +159,7 @@ def main(stdscr):
                 else:
                     mode = 0
                     break
-
+        #stats mode
         elif mode == 3:
             
             while(True):
