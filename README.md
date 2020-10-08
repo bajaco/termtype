@@ -25,7 +25,7 @@ Select play from the menu to play the game. A random wikipedia article will be l
 
 ![Screenshot](images/play.png)
 
-Press enter after every line, every sentence, or whenever you prefer to clear words on the screen. After finishing the text you will be brought to a statistics screen, which is also accessible through the main menu.
+Press enter after every line, every sentence, or whenever you prefer to clear words on the screen. After finishing the text you will be brought to a statistics screen, which is also accessible through the main menu. You can also press escape at any time to quit typing, the words you've entered will still be counted towards your statistics.
 
 ### Notes
 - I chose not to use Curses to render characters directly, and instead render the entire page at once. This was to ensure that the terminal can be resized without adversely affecting gameplay. This means that the text automatically word wraps to display properly.
