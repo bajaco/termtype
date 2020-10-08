@@ -14,6 +14,7 @@ from classes import Database
 def main(stdscr):
     menu = Menu(stdscr, 'Help', 'Play', 'Stats', 'Exit')
     keyboard = Keyboard(stdscr)
+    database = Database(stdscr)
     mode = 0
     key = 0
     curses.curs_set(0)
@@ -41,8 +42,7 @@ def main(stdscr):
             errors = 0
             entered_words = 0
             timer = Timer()
-            database = Database()
-
+            
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
                     line_height=6, vertical_offset=1, vertical_buffer=0)
@@ -90,9 +90,11 @@ def main(stdscr):
                 
                 #if key is ESC
                 elif c == 27:
-                    timer.stop()
                     count = typing_buffer.get_count()
                     entered_words += count
+                    if entered_words == 0:
+                        break
+                    timer.stop()
                     removed = wiki_formatter.remove_words(count)
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
@@ -111,27 +113,13 @@ def main(stdscr):
 
             #statistics loop
             while(True):
+                if entered_words == 0:
+                    mode = 0
+                    break
                 stdscr.clear()
-                results_string = ''
-                results_string += 'Stats: \n'
-                results_string += 'Errors: ' + str(errors) + '\n'
-                results_string += 'Time: ' + str(timer.get_pretty_duration())
-                results_string += '\n'
-                results_string += 'Words: '
-                results_string += str(entered_words)
-                results_string += '\n'
-                results_string += 'WPM: '
-                results_string += str(int(round(entered_words / timer.get_duration() * 60)))
-                #stdscr.addstr(0,0,results_string)
-                #stdscr.refresh()
-
-                database.write(timer.get_duration(),entered_words,errors)
-                database.read()
-                stats = database.get_result_7_days()
-                for stat in stats:
-                    results_string += '\n' + str(stat)
-
-                stdscr.addstr(0,0,results_string)
+                database.write(timer.get_duration(), entered_words, errors)
+                database.read() 
+                database.print_stats()
                 stdscr.refresh()
 
 
@@ -144,6 +132,18 @@ def main(stdscr):
                     break
 
         elif mode == 3:
-            mode = 4
+            
+            while(True):
+                stdscr.clear()
+                database.read() 
+                database.print_stats()
+                stdscr.refresh()
+                c = stdscr.getkey()
+                if c == 'q':
+                    mode = 4
+                    break
+                else:
+                    mode = 0
+                    break
 
 curses.wrapper(main)

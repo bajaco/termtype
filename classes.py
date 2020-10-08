@@ -9,9 +9,10 @@ import sqlite3
 import pathlib
 
 class Database:
-    def __init__(self):
+    def __init__(self,stdscr):
         self.path = pathlib.Path(__file__).parent.absolute() / 'termtype.db'
         self.results = None
+        self.stdscr = stdscr
         self.conn = sqlite3.connect(self.path)
         self.c = self.conn.cursor()
         try:
@@ -51,7 +52,63 @@ class Database:
  
     
     def get_result_last(self):
-        return self.results[-1]
+        if len(self.results) > 0:
+            return self.results[-1]
+        else:
+            return self.results[0]
+
+    def get_pretty_duration(self,dur):
+        durstring = ''
+        if dur > 3600:
+            hours = int(dur/3600)
+            durstring += str(hours)
+            dursting += ' hours '
+            dur -= 3600 * hours
+            
+        if dur > 60:
+            minutes = int(dur/60)
+            durstring += str(minutes)
+            durstring += ' minutes '
+            dur -= 60 * minutes
+            
+        durstring += str(int(dur))
+        durstring += ' seconds'
+        return durstring
+
+
+    def print_stats(self):
+        stats = None
+        if self.results:
+            last = self.get_result_last()
+            total = self.get_result_total()
+            seven = self.get_result_7_days()
+            stats = ['Most Recent Session:',
+                    '   Words per Minute: ' + str(round(last[1]/last[0]*60,1)),
+                    '   Errors per Minute: ' + str(round(last[2]/last[0]*60,1)),
+                    '   Words: ' + str(last[1]),
+                    '   Errors: ' + str(last[2]),
+                    '   Time: ' + self.get_pretty_duration(last[0]),
+                    '',
+                    'Last Seven Days:',
+                    '   Words per Minute: ' + str(round(seven[1]/seven[0]*60,1)),
+                    '   Errors per Minute: ' + str(round(seven[2]/seven[0]*60,1)),
+                    '   Words: ' + str(seven[1]),
+                    '   Errors: ' + str(seven[2]),
+                    '   Time: ' + self.get_pretty_duration(seven[0]),
+                    '',
+                    'All Time:',
+                    '   Words per Minute: ' + str(round(total[1]/total[0]*60,1)),
+                    '   Errors per Minute: ' + str(round(total[2]/total[0]*60,1)),
+                    '   Words: ' + str(total[1]),
+                    '   Errors: ' + str(total[2]),
+                    '   Time: ' + self.get_pretty_duration(total[0]),
+                    '',
+                    'Press q to quit, any other key to continue:'
+                    ]
+        else:
+            stats=['No Stats to Display!','','Press q to quit, any other key to continue']
+        for i,line in enumerate(stats):
+            self.stdscr.addstr(i,0,line) 
 
 class Timer:
     def __init__(self):
@@ -75,25 +132,7 @@ class Timer:
     def get_duration(self):
         return self.duration
 
-    def get_pretty_duration(self):
-        dur = self.duration
-        durstring = ''
-        if dur > 3600:
-            hours = int(dur/3600)
-            durstring += str(hours)
-            dursting += ' hours '
-            dur -= 3600 * hours
-            
-        if dur > 60:
-            minutes = int(dur/60)
-            durstring += str(minutes)
-            durstring += ' minutes '
-            dur -= 60 * minutes
-            
-        durstring += str(int(dur))
-        durstring += ' seconds'
-        return durstring
-            
+                
 
 class Keyboard:
     def __init__(self,stdscr):
