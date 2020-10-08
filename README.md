@@ -2,6 +2,8 @@
 
 A Curses-based Python application to practice touch-typing by typing out random Wikipedia articles
 
+![Screenshot](images/tt.png)
+
 ### Installation
 
 1. Optionally create and enter virtual environment:
