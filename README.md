@@ -23,6 +23,8 @@ Select play from the menu to play the game. A random wikipedia article will be l
 7. Right ring
 8. Right pinky
 
+![Screenshot](images/play.png)
+
 Press enter after every line, every sentence, or whenever you prefer to clear words on the screen. After finishing the text you will be brought to a statistics screen, which is also accessible through the main menu.
 
 ### Notes
