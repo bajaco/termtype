@@ -108,7 +108,8 @@ class Database:
         else:
             stats=['No Stats to Display!','','Press q to quit, any other key to continue']
         for i,line in enumerate(stats):
-            self.stdscr.addstr(i,0,line) 
+            if i < self.stdscr.getmaxyx()[0]:
+                self.stdscr.addstr(i,0,line) 
 
 class Timer:
     def __init__(self):
