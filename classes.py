@@ -4,21 +4,54 @@ import curses
 import wikipedia
 import string
 import time
+from datetime import timedelta
 import sqlite3
+import pathlib
 
 class Database:
-    def __init__(self, database_path):
-        self.conn = sqlite.connect(database_path)
-        c = self.conn.cursor()
+    def __init__(self):
+        self.path = pathlib.Path(__file__).parent.absolute() / 'termtype.db'
+        self.results = None
+        self.conn = sqlite3.connect(self.path)
+        self.c = self.conn.cursor()
         try:
-            c.execute('''CREATE TABLE sessions
+            self.c.execute('''CREATE TABLE sessions
                     (duration real, words int, errors int, time int)''')
-            conn.commit()
+            self.conn.commit()
         
         #If table exists do nothing
         except sqlite3.Error:
             pass
 
+    def write(self, duration, words, errors):
+        insert = (duration, words, errors, time.time(),)
+        self.c.execute('INSERT INTO sessions VALUES (?,?,?,?)', insert)
+        self.conn.commit()
+
+    def read(self):
+        self.c.execute('SELECT * FROM sessions')
+        self.results = self.c.fetchall()
+
+    def get_result_total(self):
+        average = [0] * 3
+        for result in self.results:
+            average[0] += result[0]
+            average[1] += result[1]
+            average[2] += result[2]
+        return average
+    
+    def get_result_7_days(self):
+        average = [0] * 3
+        for result in self.results:
+            if time.time() - result[3] <= timedelta(days=7).total_seconds():
+                average[0] += result[0]
+                average[1] += result[1]
+                average[2] += result[2]
+        return average
+ 
+    
+    def get_result_last(self):
+        return self.results[-1]
 
 class Timer:
     def __init__(self):

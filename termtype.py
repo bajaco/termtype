@@ -8,6 +8,7 @@ from classes import Buffer
 from classes import Formatter
 from classes import Wiki
 from classes import Timer
+from classes import Database
 
 
 def main(stdscr):
@@ -30,6 +31,7 @@ def main(stdscr):
         elif mode == 1:
             mode = 4 
         elif mode == 2:
+            
             #initialization for play mode
             wiki = Wiki()
             typing_buffer = Buffer()
@@ -39,7 +41,8 @@ def main(stdscr):
             errors = 0
             entered_words = 0
             timer = Timer()
-            
+            database = Database()
+
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
                     line_height=6, vertical_offset=1, vertical_buffer=0)
@@ -74,7 +77,7 @@ def main(stdscr):
                 stdscr.refresh()
                 c = stdscr.getch()
 
-
+                #if key is ENTER
                 if c == 10: 
                     count = typing_buffer.get_count()
                     entered_words += count
@@ -84,6 +87,8 @@ def main(stdscr):
                     typing_buffer.clear()
                     error_formatter.set_master('')
                     typing_formatter.set_master('')
+                
+                #if key is ESC
                 elif c == 27:
                     timer.stop()
                     count = typing_buffer.get_count()
@@ -92,6 +97,8 @@ def main(stdscr):
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
                     break
+                
+                #other keys
                 else:
                     #start timing if necessary
                     if not timer.is_timing():
@@ -115,8 +122,19 @@ def main(stdscr):
                 results_string += '\n'
                 results_string += 'WPM: '
                 results_string += str(int(round(entered_words / timer.get_duration() * 60)))
+                #stdscr.addstr(0,0,results_string)
+                #stdscr.refresh()
+
+                database.write(timer.get_duration(),entered_words,errors)
+                database.read()
+                stats = database.get_result_7_days()
+                for stat in stats:
+                    results_string += '\n' + str(stat)
+
                 stdscr.addstr(0,0,results_string)
                 stdscr.refresh()
+
+
                 c = stdscr.getkey()
                 if c == 'q':
                     mode = 4
