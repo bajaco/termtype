@@ -21,8 +21,8 @@ Select play from the menu to play the game. A random wikipedia article will be l
 7. Right ring
 8. Right pinky
 
-Press enter after every line, every sentence, or whenever you prefer to clear words on the screen. After finishing the text you will be brought to a currently empty statistics screen.
+Press enter after every line, every sentence, or whenever you prefer to clear words on the screen. After finishing the text you will be brought to a statistics screen, which is also accessible through the main menu.
 
 ### Notes
 - I chose not to use Curses to render characters directly, and instead render the entire page at once. This was to ensure that the terminal can be resized without adversely affecting gameplay. This means that the text automatically word wraps to display properly.
-- Currently only the play function in the menu does anything. I will develop the remaining functions soon.
+
