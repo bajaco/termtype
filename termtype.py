@@ -1,7 +1,4 @@
 import curses
-from enum import Enum
-from bs4 import BeautifulSoup
-import urllib.request
 from classes import Keyboard
 from classes import Menu
 from classes import Buffer
