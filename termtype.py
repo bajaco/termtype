@@ -47,6 +47,8 @@ def main(stdscr):
             even if you don't finish the article, so feel free
             to stop at anytime!
 
+            For more information, visit https://github.com/bajaco/termtype
+
             Press any key to continue:
             '''
             help_formatter = Formatter(stdscr, help_string)

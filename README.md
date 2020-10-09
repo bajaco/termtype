@@ -11,6 +11,7 @@ A Curses-based Python application to practice touch-typing by typing out random 
 - `source venv/bin/activate`
 2. Install required packages: `pip install -r requirements.txt`
 3. Run application: `python termtype.py`
+Commands may differ, for example, pip3 instead of pip, python3 instead of python.
 
 ### Usage
 Select play from the menu to play the game. A random wikipedia article will be loaded for you to type. Any incorrect characters will be marked with an X. Additionally, above the Wikipedia text will be an indication of which finger should be used to type that particular key:
