@@ -6,6 +6,15 @@ A Curses-based Python application to practice touch-typing by typing out random 
 
 ### Installation
 
+#### Windows-Specific
+*Note: This has only been tested on Linux. It should work on Mac, but Curses is not natively available in Windows. Try installing windows-curses first:*
+
+`pip install windows-curses`
+
+*I am interested in hearing how this runs on other platforms, so feel free to open an issue.*
+
+#### General
+
 1. Optionally create and enter virtual environment:
 - `python -m venv venv`
 - `source venv/bin/activate`
