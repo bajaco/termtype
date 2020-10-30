@@ -62,7 +62,7 @@ class Database:
         if dur > 3600:
             hours = int(dur/3600)
             durstring += str(hours)
-            dursting += ' hours '
+            durstring += ' hours '
             dur -= 3600 * hours
             
         if dur > 60:
@@ -350,6 +350,10 @@ class Menu:
         elif key == curses.KEY_DOWN and self.active_item < self.menu_length:
             self.active_item += 1
         elif key == curses.KEY_ENTER or key == 10:
+            return self.active_item
+        elif key in [ 49,50,51,52 ]:
+            # ASCII code for 1,2,3,4 are 49,50,51,52 respectively
+            self.active_item = key - 48
             return self.active_item
         return 0
 
