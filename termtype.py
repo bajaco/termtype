@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import curses
 from classes import Keyboard
 from classes import Menu
@@ -19,10 +21,10 @@ def main(stdscr):
     curses.curs_set(0)
     curses.noecho()
     curses.use_default_colors()
-    
+
     #selct mode based on menu options
-    while mode != 4: 
-        
+    while mode != 4:
+
         #menu mode
         if mode == 0:
             stdscr.clear()
@@ -30,12 +32,12 @@ def main(stdscr):
             menu.print_menu()
             mode = menu.navigate(stdscr.getch())
             stdscr.refresh()
-        
+
         #help mode
         elif mode == 1:
             help_string = '''
-            Welcome to termtype! Termtype is a touch-typing aid 
-            that allows you to practice your skills by typing 
+            Welcome to termtype! Termtype is a touch-typing aid
+            that allows you to practice your skills by typing
             random Wikipedia articles. Simply type the displayed
             text, and refer to the line above to check which finger
             to use. From left pinky to right pinky, the fingers
@@ -57,10 +59,10 @@ def main(stdscr):
             c = stdscr.getch()
 
             mode = 0
-        
+
         #play mode
         elif mode == 2:
-            
+
             #initialization for play mode
             wiki = Wiki()
             typing_buffer = Buffer()
@@ -70,15 +72,15 @@ def main(stdscr):
             errors = 0
             entered_words = 0
             timer = Timer()
-            
+
             #Formatter for article
             wiki_formatter = Formatter(stdscr, page_text,
                     line_height=6, vertical_offset=1, vertical_buffer=0)
-            
+
             #Formatter for finger indication
             guide_formatter = Formatter(stdscr, guide_text,
                     line_height=6, vertical_offset=0, vertical_buffer=0)
-           
+
             #Formatter for typed text
             typing_formatter = Formatter(stdscr, typing_buffer.get_text(),
                     line_height=6, vertical_offset=2, vertical_buffer=0)
@@ -91,22 +93,22 @@ def main(stdscr):
             while(True):
                 #clear string and print from formatters
                 stdscr.clear()
-                wiki_formatter.print_text() 
+                wiki_formatter.print_text()
                 guide_formatter.print_text()
                 typing_formatter.print_text()
                 error_formatter.print_text()
-                
+
                 #break if there are no more words to be typed and show statistics
                 if wiki_formatter.out_of_words():
                     timer.stop()
                     break
-                
+
                 #if key is enter, remove page from wiki and guide formatters
                 stdscr.refresh()
                 c = stdscr.getch()
 
                 #if key is ENTER
-                if c == 10: 
+                if c == 10:
                     count = typing_buffer.get_count()
                     entered_words += count
                     removed = wiki_formatter.remove_words(count)
@@ -115,7 +117,7 @@ def main(stdscr):
                     typing_buffer.clear()
                     error_formatter.set_master('')
                     typing_formatter.set_master('')
-                
+
                 #if key is ESC
                 elif c == 27:
                     count = typing_buffer.get_count()
@@ -127,7 +129,7 @@ def main(stdscr):
                     guide_formatter.remove_words(count)
                     errors += typing_buffer.new_errors(removed)
                     break
-                
+
                 #other keys
                 else:
                     #start timing if necessary
@@ -146,7 +148,7 @@ def main(stdscr):
                     break
                 stdscr.clear()
                 database.write(timer.get_duration(), entered_words, errors)
-                database.read() 
+                database.read()
                 database.print_stats()
                 stdscr.refresh()
 
@@ -160,10 +162,10 @@ def main(stdscr):
                     break
         #stats mode
         elif mode == 3:
-            
+
             while(True):
                 stdscr.clear()
-                database.read() 
+                database.read()
                 database.print_stats()
                 stdscr.refresh()
                 c = stdscr.getkey()
