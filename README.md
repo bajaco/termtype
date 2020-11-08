@@ -41,3 +41,11 @@ Press enter after every line, every sentence, or whenever you prefer to clear wo
 ### Notes
 - I chose not to use Curses to render characters directly, and instead render the entire page at once. This was to ensure that the terminal can be resized without adversely affecting gameplay. This means that the text automatically word wraps to display properly.
 
+### Project goals moving forward
+Having gotten a couple collaborators for certain issues I wanted to outline some potential plans for Termtype moving forward. New plans or ideas will be added here as the project progresses.
+
+- Different modes for finger indication. Potential to use letters (IMRP) for corresponding fingers. Also potentially a color-corresponding mode.
+
+- Package the project for PyPI
+
+- More involved statistics display
